@@ -5,5 +5,130 @@
 {% endblock %}
 
 {% block body %} 
-<h1>Template</h1>
+{% if not message %}
+	<a href="/login">Login</a>
+	<a href="/register">Register</a>
+{% endif %}
+
+<div class ="title">
+    <h1 onclick = "search()" class="chosen" id = "searchButton">Search Flights</h1>
+    <h1 onclick = "check()" id = "checkButton" >Check Flight Status</h1>
+</div>
+
+<div id="searchBlock">
+    <button onclick="oneWay()" class="active" id="oneWayButton">One Way</button>
+    <button onclick="roundTrip()" id="roundTripButton">Round Trip</button>
+    <form action="/searchFlights" method="POST">
+        <input type="text" name = "dept_from" placeholder="place of departure" required/> </br>
+        <input type="text" name = "arr_at" placeholder="destination" required/></br>
+        <input type="date" name = "dept_date" placeholder="departure date" required/></br>
+        <input type="date" name = "return_date" id="return_date" placeholder="return date"/></br>
+        <!-- <input type="text" name = "arr_date" placeholder="return date" required/></br> -->
+        <input type="submit" value = Search> <br>
+    </form>
+
+    {% if flights %}
+    {% if returnFlights %}
+    <h2>Departure Flights</h2>
+    {% endif %}
+    <table>
+        <th> Airline Name </th>
+        <th> Flight Number </th>
+        <th> Departure Time </th>
+        <th> Arrival Time </th>
+        <th> Base Price </th>
+        <th> Flight Status </th>
+        <th> Departure from </th>
+        <th> Departure City </th>
+        <th> Arrive at </th>
+        <th> Arrival City </th>
+    {% for line in flights %}
+        <tr>
+            <td>{{line['airline_name']}}</td>
+            <td>{{line['flight_num']}}</td>
+            <td>{{line['dept_time']}}</td>
+            <td>{{line['arr_time']}}</td>
+            <td>{{line['base_price']}}</td>
+            <td>{{line['flight_status']}}</td>
+            <td>{{line['dept_from']}}</td>
+            <td>{{line['city']}}</td>
+            <td>{{line['arr_at']}}</td>
+            <td>{{line['B.city']}}</td>
+        </tr>
+    {% endfor %}
+    </table>
+    {% endif %}
+
+    {% if returnFlights %}
+    <h2>Return Flights</h2>
+    <table>
+        <th> Airline Name </th>
+        <th> Flight Number </th>
+        <th> Departure Time </th>
+        <th> Arrival Time </th>
+        <th> Base Price </th>
+        <th> Flight Status </th>
+        <th> Departure from </th>
+        <th> Departure City </th>
+        <th> Arrive at </th>
+        <th> Arrival City </th>
+    {% for line in returnFlights %}
+        <tr>
+            <td>{{line['airline_name']}}</td>
+            <td>{{line['flight_num']}}</td>
+            <td>{{line['dept_time']}}</td>
+            <td>{{line['arr_time']}}</td>
+            <td>{{line['base_price']}}</td>
+            <td>{{line['flight_status']}}</td>
+            <td>{{line['dept_from']}}</td>
+            <td>{{line['city']}}</td>
+            <td>{{line['arr_at']}}</td>
+            <td>{{line['B.city']}}</td>
+        </tr>
+    {% endfor %}
+    </table>
+    {% endif %}
+</div>
+
+<div id="checkBlock">
+    <form action="/checkFlight" method="POST">
+        <input type="text" name = "airline_name" placeholder="airline name" required/> </br>
+        <input type="text" name = "flight_num" placeholder="flight number" required/> </br>
+        <div class="prompt">departure date</div>
+        <input type="date" name = "dept_date" placeholder="departure date" /></br>
+        <div class="prompt">arrival date</div>
+        <input type="date" name = "arr_date" id="arr_date" placeholder="arrival date"/></br>
+        <!-- <input type="text" name = "arr_date" placeholder="return date" required/></br> -->
+        <input type="submit" value = Search> <br>
+    </form>
+
+    {% if status %}
+    <table>
+            <th> Airline Name </th>
+            <th> Flight Number </th>
+            <th> Departure Time </th>
+            <th> Arrival Time </th>
+            <th> Flight Status </th>
+            <th> Departure from </th>
+            <th> Arrive at </th>
+        {% for line in status %}
+            <tr>
+                <td>{{line['airline_name']}}</td>
+                <td>{{line['flight_num']}}</td>
+                <td>{{line['dept_time']}}</td>
+                <td>{{line['arr_time']}}</td>
+                <td>{{line['flight_status']}}</td>
+                <td>{{line['dept_from']}}</td>
+                <td>{{line['arr_at']}}</td>
+            </tr>
+        {% endfor %}
+        </table>
+    {% endif %}
+
+</div>
+
+{% if error %}
+<p class="error"><strong>Error:</strong> {{error}}</p>
+{% endif %}
+
 {% endblock %} 

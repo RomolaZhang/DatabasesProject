@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block head %} 
+
+{% endblock %}
+
+{% block body %} 
+    <form action="/registerAuth" method="POST">
+        <input type="text" name = "email" placeholder="email" required/> </br>
+        <input type="password" name = "password" placeholder="password" required/></br>
+        <input type="text" name = "name" placeholder="name" required/> </br>
+        
+        <input type="text" name = "building_num" placeholder="building number" required/> </br>
+        <input type="text" name = "street" placeholder="street" required/> </br>
+        <input type="text" name = "city" placeholder="city" required/> </br>
+        <input type="text" name = "state" placeholder="state" required/> </br>
+        <input type="text" name = "phone_num" placeholder="phone number" required/> </br>
+        <input type="text" name = "passport_num" placeholder="passport number" required/> </br>
+        <input type="date" name = "passport_expr" placeholder="passport expiration date" required/> </br>
+        <input type="text" name = "passport_country" placeholder="passport country" required/> </br>
+        <input type="date" name = "DOB" placeholder="date of birth" required/> </br>
+        <input type="submit" value = Register />
+        {% if error %}
+            <p class="error"><strong>Error:</strong> {{error}}</p>
+        {% endif %}
+    </form>
+    <a href="/">Go back</a>
+{% endblock %} 

@@ -1,0 +1,32 @@
+table, th, td{
+    border: 1px solid black;
+   }
+
+#return_date{
+    display: none;
+}
+  
+.active{
+    color: red;
+}
+
+.chosen{
+    text-decoration: underline;
+}
+
+h1{
+    margin-right: 15px;
+}
+
+.title{
+    display: flex;
+    flex-direction: row;
+}
+
+#checkBlock{
+    display: none;
+}
+
+.prompt{
+    margin-top: 10px;
+}
