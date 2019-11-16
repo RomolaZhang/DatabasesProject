@@ -1,0 +1,64 @@
+var customerForm = document.getElementById("customerForm");
+var agentForm = document.getElementById("agentForm");
+var staffForm = document.getElementById("staffForm");
+
+function changeRole(){
+    var x = document.getElementById("mySelect").value;
+    if(x == "customer"){
+        customerForm.style.display = "block";
+        agentForm.style.display = "none";
+        staffForm.style.display = "none";
+    }else if(x == "agent"){
+        agentForm.style.display = "block";
+        customerForm.style.display = "none";
+        staffForm.style.display = "none";
+    }else{
+        staffForm.style.display = "block";
+        agentForm.style.display = "none";
+        customerForm.style.display = "none";
+    }
+}
+
+function checkForm(){
+    var inputs = document.getElementsByTagName("input");
+    var p, q;
+    if(document.getElementById("mySelect").value == "customer"){
+        p = 0;
+        q = 2;
+    }else if(document.getElementById("mySelect").value == "agent"){
+        p = 2;
+        q = 4;
+    }else{
+        p = 4;
+        q = inputs.length;
+    }
+	for(var i = p; i < q; i++){
+        if(inputs[i].name=="email"){
+            var regex = /\w+@\w+\.\w+/;
+            if (!regex.test(inputs[i].value)) {
+                alert ("Make sure to input a valid email format.")
+                inputs[i].focus();
+                inputs[i].select();
+                inputs[i].style.backgroundColor="#f88";
+                return false;
+            }
+        }
+        if(inputs[i].name=="password"){
+            if(inputs[i].value == "" || inputs[i].value.length < 6){
+               alert ("Make sure to provide a password longer than 6 characters.");
+               inputs[i].focus();
+               inputs[i].select();
+               inputs[i].style.backgroundColor="#f88";
+               return false;
+            }
+        }
+        if ((inputs[i].value == "") || (inputs[i].value == null)){
+          inputs[i].focus();
+          inputs[i].select();
+          inputs[i].style.backgroundColor="#f88";
+          alert ("You need to fill in the " + inputs[i].placeholder + " field.");
+          return false;
+        }
+    }
+    return true;
+}

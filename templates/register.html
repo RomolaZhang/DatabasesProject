@@ -5,24 +5,53 @@
 {% endblock %}
 
 {% block body %} 
-    <form action="/registerAuth" method="POST">
-        <input type="text" name = "email" placeholder="email" required/> </br>
-        <input type="password" name = "password" placeholder="password" required/></br>
-        <input type="text" name = "name" placeholder="name" required/> </br>
-        
-        <input type="text" name = "building_num" placeholder="building number" required/> </br>
-        <input type="text" name = "street" placeholder="street" required/> </br>
-        <input type="text" name = "city" placeholder="city" required/> </br>
-        <input type="text" name = "state" placeholder="state" required/> </br>
-        <input type="text" name = "phone_num" placeholder="phone number" required/> </br>
-        <input type="text" name = "passport_num" placeholder="passport number" required/> </br>
-        <input type="date" name = "passport_expr" placeholder="passport expiration date" required/> </br>
-        <input type="text" name = "passport_country" placeholder="passport country" required/> </br>
-        <input type="date" name = "DOB" placeholder="date of birth" required/> </br>
+    <h1>Register Form</h1>
+    <select name="role" id = "mySelect" onchange="changeRole()">
+        <option value="customer" selected>Customer</option>
+        <option value="agent">Booking Agent</option>
+        <option value="staff">Airline Staff</option>
+    </select>
+
+    <form action="/registerAuthCustomer" id = "customerForm" method="POST" onsubmit="return checkForm();">
+        <input type="email" name = "email" placeholder="email"/> </br>
+        <input type="password" name = "password" placeholder="password"/></br>
+        <input type="text" name = "name" placeholder="name"/> </br>
+        <input type="text" name = "building_num" placeholder="building number"/> </br>
+        <input type="text" name = "street" placeholder="street"/> </br>
+        <input type="text" name = "city" placeholder="city" /> </br>
+        <input type="text" name = "state" placeholder="state"/> </br>
+        <input type="text" name = "phone_num" placeholder="phone number"/> </br>
+        <input type="text" name = "passport_num" placeholder="passport number" /> </br>
+        <div class="prompt">passport expiration date</div>
+        <input type="date" name = "passport_expr" placeholder="passport expiration date"/> </br>
+        <input type="text" name = "passport_country" placeholder="passport country"/> </br>
+        <div class="prompt">date of birth</div>
+        <input type="date" name = "DOB" placeholder="date of birth"/> </br>
         <input type="submit" value = Register />
-        {% if error %}
-            <p class="error"><strong>Error:</strong> {{error}}</p>
-        {% endif %}
     </form>
+
+    <form action="/registerAuthAgent" id = "agentForm" method="POST" onsubmit="return checkForm();">
+        <input type="email" name = "email" placeholder="email"/> </br>
+        <input type="password" name = "password" placeholder="password"/></br>
+        <input type="text" name = "id" placeholder="id"/> </br>
+        <input type="submit" value = Register />
+    </form>
+    
+    <form action="/registerAuthStaff" id = "staffForm" method="POST" onsubmit="return checkForm();">
+        <input type="text" name = "username" placeholder="username"/> </br>
+        <input type="password" name = "password" placeholder="password"/></br>
+        <input type="text" name = "first_name" placeholder="first name"/> </br>
+        <input type="text" name = "last_name" placeholder="last name"/> </br>
+        <input type="date" name = "DOB" placeholder="date of birth"/> </br>
+        <input type="text" name = "airline_name" placeholder="airline name"/> </br> 
+        <input type="submit" value = Register />    
+    </form>
+
+
     <a href="/">Go back</a>
+    {% if error %}
+            <p class="error"><strong>Error:</strong> {{error}}</p>
+    {% endif %}
+
+    <script src="{{ url_for('static',filename='js/register.js')}}"></script>
 {% endblock %} 

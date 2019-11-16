@@ -2,6 +2,10 @@ table, th, td{
     border: 1px solid black;
    }
 
+input{
+    margin-bottom: 10px;
+}
+
 #return_date{
     display: none;
 }
@@ -28,5 +32,17 @@ h1{
 }
 
 .prompt{
-    margin-top: 10px;
+    font-size: small;
+}
+
+#error{
+    display: none;
+}
+
+#agentForm{
+    display: none;
+}
+
+#staffForm{
+    display: none;
 }

@@ -5,13 +5,35 @@
 {% endblock %}
 
 {% block body %} 
-    <form action="/loginAuth" method="POST">
-        <input type="text" name = "email" placeholder="email" required/> </br>
-        <input type="text" name = "password" placeholder="password" required/></br>
+    <h1>Login Page</h1>
+    <select name="role" id = "mySelect" onchange="changeRole()">
+        <option value="customer" selected>Customer</option>
+        <option value="agent">Booking Agent</option>
+        <option value="staff">Airline Staff</option>
+    </select>
+
+    <form action="/loginAuthCustomer" id = "customerForm" method="POST" onsubmit="return checkForm();">
+        <input type="email" name = "email" placeholder="email"/> </br>
+        <input type="password" name = "password" placeholder="password"/></br>
         <input type="submit" value = Login />
-        {% if error %}
-            <p class="error"><strong>Error:</strong> {{error}}</p>
-        {% endif %}
     </form>
+
+    <form action="/loginAuthAgent" id = "agentForm" method="POST" onsubmit="return checkForm();">
+        <input type="email" name = "email" placeholder="email"/> </br>
+        <input type="password" name = "password" placeholder="password"/></br>
+        <input type="submit" value = Login />
+    </form>
+    
+    <form action="/loginAuthStaff" id = "staffForm" method="POST" onsubmit="return checkForm();">
+        <input type="text" name = "username" placeholder="username"/> </br>
+        <input type="password" name = "password" placeholder="password"/></br>
+        <input type="submit" value = Login />    
+    </form>
+
     <a href="/">Go back</a>
+    {% if error %}
+            <p class="error"><strong>Error:</strong> {{error}}</p>
+    {% endif %}
+
+    <script src="{{ url_for('static',filename='js/login.js')}}"></script>
 {% endblock %} 
