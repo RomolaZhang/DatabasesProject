@@ -1,6 +1,7 @@
 #Import Flask Library
 from flask import Flask, render_template, request, session, url_for, redirect
 from decimal import *
+from passlib.hash import sha256_crypt
 import pymysql.cursors
 
 #Initialize the app from Flask
@@ -19,6 +20,19 @@ conn = pymysql.connect(host='192.168.64.2',
 def hello():
     return render_template('index.html')
 
+@app.route('/customerHome')
+def customerHome():
+    email = session['email']
+    username = session['username']
+    cursor = conn.cursor();
+    query = 'SELECT * FROM ticket WHERE cust_email = %s'
+    cursor.execute(query, (email))
+    data1 = cursor.fetchall() 
+    for each in data1:
+        print(each['airline_name'],each['flight_num'],each['dept_time'])
+    cursor.close()
+    return render_template('customerHome.html', username = username, flights=data1)
+
 #Define route for login
 @app.route('/login')
 def login():
@@ -35,25 +49,30 @@ def loginAuthCustomer():
     #grabs information from the forms 
     email = request.form['email']
     password = request.form['password']
-    print(email, password)
     #cursor used to send queries
     cursor = conn.cursor()
     #executes query
-    query = 'SELECT * FROM customer WHERE email = %s and password = %s'
-    cursor.execute(query, (email, password))
+    query = 'SELECT * FROM customer WHERE email = %s'
+    cursor.execute(query, (email))
     #stores the results in a variable
     data = cursor.fetchone()
     #use fetchall() if you are expecting more than 1 data row
     cursor.close()
     error = None
     if(data):
-        #creates a session for the the user
-        #session is a built in
-        session['email'] = email
-        return redirect(url_for('customerhome'))
+        if(sha256_crypt.verify(password, data['password'])):
+            #creates a session for the the user
+            #session is a built in
+            session['email'] = email
+            session['username'] = data['name']
+            return redirect(url_for('customerHome'))
+        else:
+            #returns an error message to the html page
+            error = 'Invalid password'
+            return render_template('login.html', error=error)
     else:
         #returns an error message to the html page
-        error = 'Invalid password or username'
+        error = 'Invalid username'
         return render_template('login.html', error=error)
 
 @app.route('/loginAuthAgent', methods=['GET', 'POST'])
@@ -63,21 +82,26 @@ def loginAuthAgent():
     #cursor used to send queries
     cursor = conn.cursor()
     #executes query
-    query = 'SELECT * FROM booking_agent WHERE email = %s and password = %s'
-    cursor.execute(query, (email,password))
+    query = 'SELECT * FROM booking_agent WHERE email = %s'
+    cursor.execute(query, (email))
     #stores the results in a variable
     data = cursor.fetchone()
     #use fetchall() if you are expecting more than 1 data row
     cursor.close()
     error = None
     if(data):
-        #creates a session for the the user
-        #session is a built in
-        session['email'] = email
-        return redirect(url_for('agenthome'))
+        if(sha256_crypt.verify(password, data['password'])):
+            #creates a session for the the user
+            #session is a built in
+            session['email'] = email
+            return redirect(url_for('agentHome'))
+        else:
+            #returns an error message to the html page
+            error = 'Invalid password'
+            return render_template('login.html', error=error)
     else:
         #returns an error message to the html page
-        error = 'Invalid login or username'
+        error = 'Invalid username'
         return render_template('login.html', error=error)
 
 @app.route('/loginAuthStaff', methods=['GET', 'POST'])
@@ -87,20 +111,25 @@ def loginAuthStaff():
     #cursor used to send queries
     cursor = conn.cursor()
     #executes query
-    query = 'SELECT * FROM airline_staff WHERE username = %s and password = %s'
-    cursor.execute(query, (username, password))
+    query = 'SELECT * FROM airline_staff WHERE username = %s'
+    cursor.execute(query, (username))
     #stores the results in a variable
     data = cursor.fetchone()
     #use fetchall() if you are expecting more than 1 data row
     error = None
     if(data):
-        #creates a session for the the user
-        #session is a built in
-        session['username'] = username
-        return redirect(url_for('staffhome'))
+        if(sha256_crypt.verify(password, data['password'])):
+            #creates a session for the the user
+            #session is a built in
+            session['username'] = username
+            return redirect(url_for('staffHome'))
+        else:
+            #returns an error message to the html page
+            error = 'Invalid password'
+            return render_template('login.html', error=error)
     else:
         #returns an error message to the html page
-        error = 'Invalid login or username'
+        error = 'Invalid username'
         return render_template('login.html', error=error)
     
 
@@ -109,7 +138,7 @@ def loginAuthStaff():
 def registerAuthCustomer():
     #grabs information from the forms
     email = request.form['email']
-    password = request.form['password']
+    password = sha256_crypt.encrypt(request.form['password'])
     name = request.form['name']
     building_num = request.form['building_num']
     street = request.form['street']

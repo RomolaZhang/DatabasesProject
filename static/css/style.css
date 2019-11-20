@@ -46,3 +46,23 @@ h1{
 #staffForm{
     display: none;
 }
+
+.container{
+    display: flex;
+    flex-direction: row;
+}
+
+.sidebar{
+    display: flex;
+    flex-direction: column;
+    margin: 30px;
+}
+
+.content{
+    margin-left: 30px;
+}
+
+.option{
+    margin-bottom: 10px;
+    text-decoration: underline;
+}
