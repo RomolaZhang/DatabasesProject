@@ -15,4 +15,4 @@ def customerHome():
     for each in data1:
         print(each['airline_name'],each['flight_num'],each['dept_time'])
     cursor.close()
-    return render_template('customerHome.html', username = username, flights=data1
+    return render_template('customerHome.html', username = username, flights=data1)
