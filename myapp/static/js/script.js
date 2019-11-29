@@ -7,28 +7,48 @@ var checkButton = document.getElementById("checkButton");
 var searchBlock = document.getElementById("searchBlock");
 var checkBlock = document.getElementById("checkBlock");
 
+sessionStorage.setItem("Page2Visited", "True");
+
 function oneWay(){
     return_date.style.display = "none";
-    oneWayButton.className = "active";
-    roundTripButton.className = "";
+    oneWayButton.className += " active";
+    roundTripButton.className = "smallButton";
+    
 }
 
 function roundTrip(){
-    return_date.style.display = "block";
-    roundTripButton.className = "active";
-    oneWayButton.className = "";
+    return_date.style.display = "flex";
+    roundTripButton.className += " active";
+    oneWayButton.className = "smallButton";
+}
+
+function checkForm(){
+    if(roundTripButton.className == "active"){
+        var inputs = document.getElementsByTagName("input");
+        var i = 0;
+        for(i=0; i< inputs.length; i++){
+            if ((inputs[i].value == "") || (inputs[i].value == null)){
+                console.log("here");
+                inputs[i].focus();
+                inputs[i].select();
+                inputs[i].style.backgroundColor="#f88";
+                alert ("You need to fill in the return date field.");
+                return false;
+            }
+        }
+    }
 }
 
 function search(){
     checkBlock.style.display = "none";
     searchBlock.style.display = "block";
-    searchButton.className = "chosen";
-    checkButton.className = "";
+    searchButton.className += " chosen";
+    checkButton.className = "bigButton";
 }
 
 function check(){
     searchBlock.style.display = "none";
     checkBlock.style.display = "block";
-    checkButton.className = "chosen";
-    searchButton.className = "";
+    checkButton.className += " chosen";
+    searchButton.className = "bigButton";
 }

@@ -5,30 +5,18 @@
 {% endblock %}
 {% block body %} 
 <div class="container">
-    <div class="sidebar">
-        <div class="option">View My Flights</div>
-        <div class="option">Search for Flights</div>
-        <div class="option">Purchase Tickets</div>
-        <div class="option">Give Comments</div>
-        <div class="option">Track My Spending</div>
-        <div class="option">Log Out</div>
-    </div>
+        <div class="sidebar">
+                <a href="/customerHome" class="option">Home</a>
+                <a href="/viewMyFlights" class="option">View My Flights</a>
+                <a href="/searchForFlights" class="option">Search for Flights</a>
+                <a href="/comments" class="option">Give Comments</a>
+                <a href="/trackMySpending" class="option">Track My Spending</a>
+                <a href="/logout" class="option">Log out</a>
+        </div>
 
     <div class="content">
-        <h1>Welcome {{username}}</h1>
-        <div>Future Flights:</div>
-        <table>
-            <th> Airline Name </th>
-            <th> Flight Number </th>
-            <th> Departure Time </th>
-            {% for line in flights %}
-            <tr>
-                <td>{{line['airline_name']}}</td>
-                <td>{{line['flight_num']}}</td>
-                <td>{{line['dept_time']}}</td>
-            </tr>
-            {% endfor %}
-        </table>
+        <div class="title">Welcome, {{username}}</div>
+    
     </div>
 </div>
 

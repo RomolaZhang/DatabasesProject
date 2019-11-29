@@ -6,40 +6,65 @@
 
 {% block body %} 
 {% if not message %}
-	<a href="/login">Login</a>
-	<a href="/register">Register</a>
+<div class="topBar">
+    <div class="logo">Airline Ticket System</div>
+    <div>
+	    <a class="link" href="/login">LOGIN</a>
+        <a class="link" href="/register">REGISTER</a>
+    </div>
+</div>
+
+<div class="line"></div>
 {% endif %}
 
-<div class ="title">
-    <h1 onclick = "search()" class="chosen" id = "searchButton">Search Flights</h1>
-    <h1 onclick = "check()" id = "checkButton" >Check Flight Status</h1>
+<div class ="bigButtons">
+    <div onclick = "search()" class="bigButton chosen" id = "searchButton">Search Flights</div>
+    <div onclick = "check()" class="bigButton" id = "checkButton" >Check Flight Status</div>
 </div>
 
 <div id="searchBlock">
-    <button onclick="oneWay()" class="active" id="oneWayButton">One Way</button>
-    <button onclick="roundTrip()" id="roundTripButton">Round Trip</button>
-    <form action="/searchFlights" method="POST">
-        <input type="text" name = "dept_from" placeholder="place of departure" required/> </br>
-        <input type="text" name = "arr_at" placeholder="destination" required/></br>
-        <div class="prompt">departure date</div>
-        <input type="date" name = "dept_date" placeholder="departure date" required/></br>
-        <div id="return_date">
-            <div class="prompt">return date</div>
-            <input type="date" name = "return_date" placeholder="return date"/></br>
+    <div onclick="oneWay()" class="smallButton active" id="oneWayButton">One Way</div>
+    <div onclick="roundTrip()" class="smallButton" id="roundTripButton">Round Trip</div>
+    <form action="/searchFlights" class="searchForm" method="POST">
+        <div class="inputBlock">
+            <label for="dept_from">place of departure:</label>
+            <input type="text" name = "dept_from" placeholder="city/airport" required/> </br>
         </div>
-        <input type="submit" value = Search> <br>
+        <div class="inputBlock">
+            <label for="arr_at">destination:</label>
+            <input type="text" name = "arr_at" placeholder="city/airport" required/></br>
+        </div>
+        <div class="inputBlock">
+            <label for="dept_date">departure date:</label>
+            <input type="date" name = "dept_date" required/></br>
+        </div>
+        <div class="inputBlock" id="return_date">
+            <label for="return_date">return date:</label>
+            <input type="date" name = "return_date"/></br>
+        </div>
+        <input type="submit" value = "Search"> <br>
     </form>
 </div>
 
 <div id="checkBlock">
     <form action="/checkFlight" method="POST">
-        <input type="text" name = "airline_name" placeholder="airline name" required/> </br>
-        <input type="text" name = "flight_num" placeholder="flight number" required/> </br>
-        <div class="prompt">departure date</div>
-        <input type="date" name = "dept_date" placeholder="departure date" /></br>
-        <div class="prompt">arrival date</div>
-        <input type="date" name = "arr_date" id="arr_date" placeholder="arrival date"/></br>
-        <input type="submit" value = Search> <br>
+        <div class="inputBlock">
+            <label for="airline_name">airline name:</label>
+            <input type="text" name = "airline_name" placeholder="city/airport" required/> </br>
+        </div>
+        <div class="inputBlock">
+            <label for="flight_num">flight number:</label>
+            <input type="text" name = "flight_num" required/> </br>
+        </div>
+        <div class="inputBlock">
+            <label for="dept_date">departure date:</label>
+            <input type="date" name = "dept_date" required/></br>
+        </div>
+        <div class="inputBlock">
+            <label for="arr_date">arrival date:</label>
+            <input type="date" name = "arr_date" id="arr_date" required/></br>
+        </div>
+        <input type="submit" value = "Search"> <br>
     </form>
 </div>
 

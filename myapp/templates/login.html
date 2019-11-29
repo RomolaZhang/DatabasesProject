@@ -5,7 +5,13 @@
 {% endblock %}
 
 {% block body %} 
-    <h1>Login Page</h1>
+<div class="topBar">
+        <div class="logo">Airline Ticket System</div>
+</div>
+
+<div class="line"></div>
+<div class="title">Login</div>
+<div class="wrapper">
     <select name="role" id = "mySelect" onchange="changeRole()">
         <option value="customer" selected>Customer</option>
         <option value="agent">Booking Agent</option>
@@ -13,27 +19,27 @@
     </select>
 
     <form action="/loginAuthCustomer" id = "customerForm" method="POST" onsubmit="return checkForm();">
-        <input type="email" name = "email" placeholder="email"/> </br>
-        <input type="password" name = "password" placeholder="password"/></br>
-        <input type="submit" value = Login />
+        <input class="login" type="text" name = "email" placeholder="email"/> </br>
+        <input class="login" type="password" name = "password" placeholder="password"/></br>
+        <input class="login" type="submit" value = Login />
     </form>
 
     <form action="/loginAuthAgent" id = "agentForm" method="POST" onsubmit="return checkForm();">
-        <input type="email" name = "email" placeholder="email"/> </br>
-        <input type="password" name = "password" placeholder="password"/></br>
-        <input type="submit" value = Login />
+        <input class="login" type="text" name = "email" placeholder="email"/> </br>
+        <input class="login" type="password" name = "password" placeholder="password"/></br>
+        <input class="login" type="submit" value = Login />
     </form>
     
     <form action="/loginAuthStaff" id = "staffForm" method="POST" onsubmit="return checkForm();">
-        <input type="text" name = "username" placeholder="username"/> </br>
-        <input type="password" name = "password" placeholder="password"/></br>
-        <input type="submit" value = Login />    
+        <input class="login" type="text" name = "username" placeholder="username"/> </br>
+        <input class="login" type="password" name = "password" placeholder="password"/></br>
+        <input class="login" type="submit" value = Login />    
     </form>
 
-    <a href="/">Go back</a>
+    <a href="/" class="back">Back</a>
     {% if error %}
             <p class="error"><strong>Error:</strong> {{error}}</p>
     {% endif %}
-
+</div>
     <script src="{{ url_for('static',filename='js/login.js')}}"></script>
 {% endblock %} 

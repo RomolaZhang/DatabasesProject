@@ -2,6 +2,13 @@ var customerForm = document.getElementById("customerForm");
 var agentForm = document.getElementById("agentForm");
 var staffForm = document.getElementById("staffForm");
 
+
+if (sessionStorage.getItem("Page2Visited")) {
+    sessionStorage.removeItem("Page2Visited");
+    window.location.reload(true); // force refresh page1
+}
+
+
 function changeRole(){
     var x = document.getElementById("mySelect").value;
     if(x == "customer"){
@@ -24,12 +31,12 @@ function checkForm(){
     var p, q;
     if(document.getElementById("mySelect").value == "customer"){
         p = 0;
-        q = 13;
+        q = 14;
     }else if(document.getElementById("mySelect").value == "agent"){
-        p = 13;
-        q = 17;
+        p = 14;
+        q = 19;
     }else{
-        p = 17;
+        p = 19;
         q = inputs.length;
     }
 	for(var i = p; i < q; i++){

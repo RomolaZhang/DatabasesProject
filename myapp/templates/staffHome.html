@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block head %} 
+
+{% endblock %}
+
+{% block body %}
+    {% if not error %}
+    <div class="container">
+        <div class="sidebar">
+            <div class="info"> 
+                    <b> Staff Information: </b> </br>
+                        Name: {{session["first_name"]}} {{session["last_name"]}} </br>
+                    Company: {{session["airline_name"]}} </br>
+                </div>
+        </br>
+            <a href = "/staffHome" class = "option"> Home </a>  
+            <a href = "/flightManage" class = "option"> Flights Management </a> 
+            <a href = "/airplaneManage" class = "option"> Airplanes Management</a>   
+            <a href = "/airportManage" class = "option"> Airports Management</a> 
+            <a href = "/ratings" class = "option"> View Ratings</a>
+            <a href = "/topAgent" class = "option"> View Top Booking Agents</a>  
+            <a href = "/topCustomer" class = "option"> View Top Customers</a> 
+            <a href = "/report" class = "option"> View Reports </a> 
+            <a href = "/revenueCompare" class = "option"> Revenue Comparison </a> 
+            <a href = "/topDestination" class = "option"> Top Destination </a> 
+            <input type="submit" value = Logout> <br>
+        </div>
+
+        <div class="content">
+            <h1>Welcome {{username}}</h1>
+
+        </div>
+    </div>
+    {% endif %}
+    {% if error %}
+        <p class="error"><strong>Error:</strong> {{error}}</p>
+        <a href="login.html">Go back to Login</a>
+    {% endif %}
+
+    <script src="{{ url_for('static',filename='js/script.js')}}"></script>
+{% endblock %}

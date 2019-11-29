@@ -5,7 +5,13 @@
 {% endblock %}
 
 {% block body %} 
-    <h1>Register Form</h1>
+<div class="topBar">
+        <div class="logo">Airline Ticket System</div>
+</div>
+
+<div class="line"></div>
+<div class="title">Register</div>
+<div class="wrapper">
     <select name="role" id = "mySelect" onchange="changeRole()">
         <option value="customer" selected>Customer</option>
         <option value="agent">Booking Agent</option>
@@ -13,45 +19,107 @@
     </select>
 
     <form action="/registerAuthCustomer" id = "customerForm" method="POST" onsubmit="return checkForm();">
-        <input type="email" name = "email" placeholder="email"/> </br>
-        <input type="password" name = "password" placeholder="password"/></br>
-        <input type="text" name = "name" placeholder="name"/> </br>
-        <input type="text" name = "building_num" placeholder="building number"/> </br>
-        <input type="text" name = "street" placeholder="street"/> </br>
-        <input type="text" name = "city" placeholder="city" /> </br>
-        <input type="text" name = "state" placeholder="state"/> </br>
-        <input type="text" name = "phone_num" placeholder="phone number"/> </br>
-        <input type="text" name = "passport_num" placeholder="passport number" /> </br>
-        <div class="prompt">passport expiration date</div>
-        <input type="date" name = "passport_expr" placeholder="passport expiration date"/> </br>
-        <input type="text" name = "passport_country" placeholder="passport country"/> </br>
-        <div class="prompt">date of birth</div>
-        <input type="date" name = "DOB" placeholder="date of birth"/> </br>
-        <input type="submit" value = Register />
+    <div class="inputBlock">
+        <label for="email">email:</label>
+        <input type="text" name = "email"/> </br>
+    </div>
+    <div class="inputBlock">
+        <label for="password">password:</label>
+        <input type="password" name = "password"/></br>
+    </div>
+    <div class="inputBlock">
+        <label for="name">name:</label>
+        <input type="text" name = "name"/> </br>
+    </div>
+    <div class="inputBlock">
+        <label for="building_num">building number:</label>
+        <input type="text" name = "building_num"/> </br>
+    </div>
+    <div class="inputBlock">
+        <label for="street">street:</label>
+        <input type="text" name = "street"/> </br>
+    </div>
+    <div class="inputBlock">
+        <label for="city">city:</label>
+        <input type="text" name = "city" /> </br>
+    </div>
+    <div class="inputBlock">
+        <label for="state">state:</label>
+        <input type="text" name = "state"/> </br>
+    </div>
+    <div class="inputBlock">
+        <label for="phone_num">phone number:</label>
+        <input type="text" name = "phone_num"/> </br>
+    </div>
+    <div class="inputBlock">
+        <label for="passport_num">passport number:</label>
+        <input type="text" name = "passport_num" /> </br>
+    </div>
+    <div class="inputBlock">
+        <label for="passport_expr">passport expiration date:</label>
+        <input type="date" name = "passport_expr" /> </br>
+    </div>
+    <div class="inputBlock">
+        <label for="passport_country">passport country</label>
+        <input type="text" name = "passport_country"/> </br>
+    </div>
+    <div class="inputBlock">
+        <label for="DOB">date of birth:</label>
+        <input type="date" name = "DOB"/> </br>
+    </div>
+        <input class="registerButton" type="submit" value ="Register" />
     </form>
 
     <form action="/registerAuthAgent" id = "agentForm" method="POST" onsubmit="return checkForm();">
-        <input type="email" name = "email" placeholder="email"/> </br>
-        <input type="password" name = "password" placeholder="password"/></br>
-        <input type="text" name = "id" placeholder="id"/> </br>
-        <input type="submit" value = Register />
+    <div class="inputBlock">
+        <label for="email">email:</label>
+        <input type="text" name = "email" /> </br>
+    </div>
+    <div class="inputBlock">
+        <label for="password">password:</label>
+        <input type="password" name = "password" /></br>
+    </div>
+    <div class="inputBlock">
+        <label for="id">ID:</label>
+        <input type="text" name = "id" /> </br>
+    </div>
+    
+    <input class="registerButton" type="submit" value = "Register" />
+  
     </form>
     
     <form action="/registerAuthStaff" id = "staffForm" method="POST" onsubmit="return checkForm();">
-        <input type="text" name = "username" placeholder="username"/> </br>
-        <input type="password" name = "password" placeholder="password"/></br>
-        <input type="text" name = "first_name" placeholder="first name"/> </br>
-        <input type="text" name = "last_name" placeholder="last name"/> </br>
-        <input type="date" name = "DOB" placeholder="date of birth"/> </br>
-        <input type="text" name = "airline_name" placeholder="airline name"/> </br> 
-        <input type="submit" value = Register />    
+        <div class="inputBlock">
+            <label for="username">username:</label>
+            <input type="text" name = "username" /> </br>
+        </div>
+        <div class="inputBlock">
+            <label for="password">password:</label>
+            <input type="password" name = "password" /></br>
+        </div>
+        <div class="inputBlock">
+                <label for="first_name">first name:</label>
+                <input type="text" name = "first_name"/> </br>
+         </div>
+        <div class="inputBlock">
+                <label for="last_name">last name:</label>
+                <input type="text" name = "last_name"/> </br>
+        </div>
+        <div class="inputBlock">
+            <label for="DOB">date of birth:</label>
+            <input type="date" name = "DOB"/> </br>
+        </div>
+        <div class="inputBlock">
+                <label for="airline_name">airline name:</label>
+                <input type="text" name = "airline_name"/> </br>
+            </div>
+        <input class="registerButton" type="submit" value = "Register" />    
     </form>
 
-
-    <a href="/">Go back</a>
+    <a href="/" class="back">Back</a>
     {% if error %}
             <p class="error"><strong>Error:</strong> {{error}}</p>
     {% endif %}
-
+</div>
     <script src="{{ url_for('static',filename='js/register.js')}}"></script>
 {% endblock %} 

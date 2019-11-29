@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-from flask import Blueprint, render_template, request, url_for, redirect
+from flask import Blueprint, render_template, request, redirect
 from database import conn
+from decimal import *
 
 public = Blueprint('public', __name__)
 

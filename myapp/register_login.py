@@ -37,6 +37,7 @@ def loginAuthCustomer():
             #creates a session for the the user
             #session is a built in
             session['email'] = email
+            session['role'] = 'customer'
             session['username'] = data['name']
             return redirect(url_for('customer.customerHome'))
         else:
@@ -67,7 +68,8 @@ def loginAuthAgent():
             #creates a session for the the user
             #session is a built in
             session['email'] = email
-            return redirect(url_for('agentHome'))
+            session['role'] = 'agent'
+            return redirect(url_for('agent.agentHome'))
         else:
             #returns an error message to the html page
             error = 'Invalid password'
@@ -95,7 +97,11 @@ def loginAuthStaff():
             #creates a session for the the user
             #session is a built in
             session['username'] = username
-            return redirect(url_for('staffHome'))
+            session['role'] = "staff"
+            session['first_name'] = data["first_name"]
+            session['last_name'] = data["last_name"]
+            session['airline_name'] = data["airline_name"]
+            return redirect(url_for('staff.staffHome'))
         else:
             #returns an error message to the html page
             error = 'Invalid password'
@@ -147,7 +153,7 @@ def registerAuthCustomer():
 @register_login.route('/registerAuthAgent', methods=['GET', 'POST'])
 def registerAuthAgent():    
     email = request.form['email']
-    password = request.form['password']
+    password = sha256_crypt.encrypt(request.form['password'])
     agent_id = request.form['id']
     #cursor used to send queries
     cursor = conn.cursor()
@@ -181,7 +187,7 @@ def registerAuthAgent():
 @register_login.route('/registerAuthStaff', methods=['GET', 'POST'])
 def registerAuthStaff(): 
     username = request.form['username']
-    password = request.form['password']
+    password = sha256_crypt.encrypt(request.form['password'])
     first_name = request.form['first_name']
     last_name = request.form['last_name']
     DOB = request.form['DOB']
