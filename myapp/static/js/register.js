@@ -31,12 +31,12 @@ function checkForm(){
     var p, q;
     if(document.getElementById("mySelect").value == "customer"){
         p = 0;
-        q = 14;
+        q = 13;
     }else if(document.getElementById("mySelect").value == "agent"){
-        p = 14;
-        q = 19;
+        p = 13;
+        q = 17;
     }else{
-        p = 19;
+        p = 17;
         q = inputs.length;
     }
 	for(var i = p; i < q; i++){

@@ -2,30 +2,34 @@
 from flask import Blueprint, render_template, request, session, url_for, redirect, jsonify
 from database import conn
 import datetime
+from login_required import *
 from decimal import *
 
 
 customer = Blueprint('customer', __name__)
 
 @customer.route('/customerHome')
+@customer_login_required
 def customerHome():
     email = session['email']
     username = session['username']
     return render_template('customerHome.html', username = username)
 
 @customer.route('/logout')
+@customer_login_required
 def logout():
     session.clear()
     return redirect('/')
 
 @customer.route('/viewMyFlights')
+@customer_or_agent_login_required
 def viewMyFlights():
     if session['role'] == 'customer':
         email = session['email']
         username = session['username']
         cursor = conn.cursor()
         current_date = datetime.datetime.now()
-        query = "select * from ticket natural join flight natural join airport as A, airport as B where cust_email = %s and date(dept_time) > %s and dept_from = A.name and arr_at = B.name"
+        query = "select * from ticket natural join flight natural join airport as A, airport as B where cust_email = %s and dept_time > %s and dept_from = A.name and arr_at = B.name"
         cursor.execute(query, (email, current_date))
         data1 = cursor.fetchall()
         conn.commit()
@@ -35,7 +39,7 @@ def viewMyFlights():
         email = session['email']
         cursor = conn.cursor()
         current_date = datetime.datetime.now()
-        query = "select * from ticket natural join flight natural join airport as A, airport as B where agent_email = %s and date(dept_time) > %s and dept_from = A.name and arr_at = B.name"
+        query = "select * from ticket natural join flight natural join airport as A, airport as B where agent_email = %s and dept_time > %s and dept_from = A.name and arr_at = B.name"
         cursor.execute(query, (email, current_date))
         data1 = cursor.fetchall()
         conn.commit()
@@ -43,10 +47,12 @@ def viewMyFlights():
         return render_template('viewMyFlights.html',  flights=data1, role = 'agent')
 
 @customer.route('/searchForFlights')
+@customer_or_agent_login_required
 def customerSearchForFlights():
     return render_template('searchForFlights.html', role = session['role'])
 
 @customer.route('/searchFlightsResults', methods=['GET', 'POST'])
+@customer_or_agent_login_required
 def searchFlights():
     #grabs information from the forms
     dept_from = request.form['dept_from']
@@ -118,6 +124,7 @@ def searchFlights():
         return render_template("searchForFlights.html", error = error,  role = session['role'])
 
 @customer.route('/purchaseTickets', methods=['GET', 'POST'])
+@customer_or_agent_login_required
 def purchaseTickets():
     airline_name = request.form['airline_name']
     flight_num = request.form['flight_num']
@@ -148,6 +155,7 @@ def purchaseTickets():
     return render_template("purchaseTickets.html", flight = data, return_flight = data2, total = total, role=session['role'])
 
 @customer.route('/purchaseDetails', methods=['GET', 'POST'])
+@customer_or_agent_login_required
 def purchaseDetails():
     airline_name = request.form['airline_name']
     flight_num = request.form['flight_num']
@@ -185,6 +193,7 @@ def purchaseDetails():
     return "Success"
 
 @customer.route('/comments')
+@customer_login_required
 def comments():
     #open cursor
     cursor = conn.cursor()
@@ -198,6 +207,7 @@ def comments():
     return render_template("comments.html", flights = data)
 
 @customer.route('/giveComments/<string:ticket_id>', methods=['GET', 'POST'])
+@customer_login_required
 def giveComments(ticket_id):
     if request.method == 'POST':
         rate = request.form['rate']
@@ -237,6 +247,7 @@ def giveComments(ticket_id):
         return render_template('giveComments.html', flight = data, rates = rates)
 
 @customer.route('/trackMySpending', methods=['GET', 'POST'])
+@customer_login_required
 def trackMySpending():
     if request.method == 'POST':
         to_date = request.form['to_date']
@@ -265,15 +276,24 @@ def trackMySpending():
 
 
     cursor = conn.cursor()
-    query = "SELECT SUM(sold_price) FROM ticket WHERE date(purchase_time) > %s AND date(purchase_time) < %s AND cust_email = %s"
+    query = "SELECT COALESCE( SUM(sold_price), 0) as total_spending FROM ticket WHERE purchase_time > %s AND purchase_time < %s AND cust_email = %s"
     cursor.execute(query, (from_date, to_date, session['email']))
-    total_spending = float(cursor.fetchone()['SUM(sold_price)'])
+    total_spending = float(cursor.fetchone()['total_spending'])
 
     if month < 12:
         string = '{} 1 {} 00:00'.format(month+1, year + 1)
     else:
         string = '{} 1 {} 00:00'.format(0, year + 2)
     temp_date = datetime.datetime.strptime(string, '%m %d %Y %H:%M')
+
+    # query = "SELECT DATE_FORMAT(purchase_time, '%%%%Y-%%%%m'), COALESCE(SUM(sold_price), 0) as monthly_spending FROM ticket \
+    #      WHERE date(purchase_time) BETWEEN date(%s) - INTERVAL %s MONTH AND cust_email = %s \
+    #          GROUP BY DATE_FORMAT(purchase_time, '%%%%Y-%%%%m') ORDER BY date(purchase_time) ASC"
+    # cursor.execute(query, (temp_date, monthnum, session['email']))
+    # data = cursor.fetchall()
+    # print(data)
+    # cursor.close()
+    
     labels = []
     values = []
     temp_year = year
@@ -289,7 +309,7 @@ def trackMySpending():
         string = '{} 1 {} 00:00'.format(temp_month, temp_year)
         temp_date = datetime.datetime.strptime(string, '%m %d %Y %H:%M')
         print(temp_date)
-        query = "SELECT SUM(sold_price) as monthly_spending FROM ticket WHERE date(purchase_time) > %s and date(purchase_time) < %s AND cust_email = %s"
+        query = "SELECT SUM(sold_price) as monthly_spending FROM ticket WHERE purchase_time > %s and purchase_time < %s AND cust_email = %s"
         cursor.execute(query, (temp_date, this_date, session['email']))
         data = cursor.fetchone()
         label = '{}-{}'.format(temp_year, temp_month)
@@ -306,4 +326,4 @@ def trackMySpending():
         mymax = max(values)
     except:
         mymax = 100
-    return render_template('trackMySpending.html', title='Bitcoin Monthly Price in USD', total_spending = total_spending, max = mymax, from_date = from_date_string, to_date = to_date_string,labels=labels, values=values)
+    return render_template('trackMySpending.html', total_spending = total_spending, max = mymax, from_date = from_date_string, to_date = to_date_string,labels=labels, values=values)

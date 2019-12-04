@@ -5,7 +5,6 @@
 {% endblock %}
 
 {% block body %}
-    {% if not error%}
     <!-- start of the sidebar -->
     <div class="container">
         <div class="sidebar">
@@ -17,22 +16,21 @@
         </br>
             <a href = "/staffHome" class = "option"> Home </a>  
             <a href = "/flightManage" class = "option"> Flights Management </a> 
-            <a href = "/airplaneManage" class = "option"> Airplanes Management</a>   
-            <a href = "/airportManage" class = "option"> Airports Management</a> 
-            <a href = "/ratings" class = "option"> View Ratings</a>
-            <a href = "/topAgent" class = "option"> View Top Booking Agents</a>  
-            <a href = "/topCustomer" class = "option"> View Top Customers</a> 
-            <a href = "/report" class = "option"> View Reports </a> 
-            <a href = "/revenueCompare" class = "option"> Revenue Comparison </a> 
-            <a href = "/topDestination" class = "option"> Top Destination </a> 
-            <input type="submit" value = Logout> <br>
+            <a href = "/airSystemManage/airplane" class = "option"> Airplanes Management</a>   
+            <a href = "/airSystemManage/airport" class = "option"> Airports Management</a> 
+            <a href = "/flightManage" class = "option"> View Ratings</a>
+            <a href = "/report/topAgent" class = "option"> View Top Booking Agents</a>  
+            <a href = "/report/topCustomer" class = "option"> View Top Customers</a> 
+            <a href = "/report/salesReport/default" class = "option"> View Reports </a> 
+            <a href = "/report/revenueCompare" class = "option"> Revenue Comparison </a> 
+            <a href = "/report/topDestination" class = "option"> Top Destination </a> 
+            <a href="/logout" class="option">Log out</a>
         </div>
     <!-- sidebar ends -->
 
     <!-- display content -->
         <div class="content">
             <h1>Flights Operated by {{session["airline_name"]}} </h1>
-
             <div class = "condition panel">
                 <form action='/flightManage' method="POST">
                     <h4> View Options </h4>
@@ -40,13 +38,16 @@
                     <input type="text" name = "arr_at" placeholder="destination" required/></br>
                     <div class="prompt">start date (departure date)</div>
                     <input type="date" name = "start_date" placeholder="start date date" required/></br>
-                    <div class="prompt">end date(departure date)</div>
+                    <div class="prompt">end date (departure date)</div>
                     <input type="date" name = "end_date" placeholder="end date" required/></br>
                     <input type="submit" value = View> <br>   
                 </form>
             </div>
 
             <div class = "flight_info">
+                {% if default%}
+                <h4> {{default}} </h4>
+                {% endif %}
                 {% if flights %}  
                     {% if msg is string %}
                     <h4> {{msg}} </h4>
@@ -64,6 +65,8 @@
                         <th> Arrive at </th>
                         <th> Airplane ID </th>
                         <th> Actions </th>
+                        <th> Passengers </th>
+                        <th> Ratings </th>
                     {% for line in flights %}
                         <tr>
                             <td>{{line['airline_name']}}</td>
@@ -76,9 +79,13 @@
                             <td>{{line['arr_at']}}</td>
                             <td>{{line['airplane_id']}}</td>
                             <td>
-                                <a href = "/updateFlight"> Update Status </a>
-                                </br>
-                                <a href = "/viewPassengers"> View Passengers </a>
+                                <a href = "/updateFlight/{{line['flight_num']}}/{{line['dept_time']}}"> Update Flight </a>
+                            </td>
+                            <td>
+                                <a href = "/viewPassengers/{{line['flight_num']}}/{{line['dept_time']}}"> View Passengers </a>
+                            </td>
+                            <td>
+                                <a href = "/report/viewRatings/{{line['flight_num']}}/{{line['dept_time']}}"> View Ratings </a>
                             </td>
                         </tr>
                     {% endfor %}
@@ -91,9 +98,9 @@
                 {% endif %}
             </div>
             
-            <div class = "add_flights">
+            <div class = "add_flight">
                 <h4> Add New Flights </h4>
-                <form action = "/addFlights" method = "POST"> 
+                <form action = "/addFlight" method = "POST"> 
                     <input type="text" name = "flight_num1" placeholder="flight number" required/> </br>
                     <div class="prompt">departure time </div>
                     <input type="datetime-local" name = "dept_time1" placeholder="departure time" required/></br>
@@ -107,15 +114,18 @@
                 </form>
             </div>
         </div>
+            <script>
+                {% if session["flight_created"] == True %}
+                alert("Flight Creation Successful!");
+                {% set session = session.update({"flight_created":False}) %}
+                {% endif %}
+
+                {% if session["flight_updated"] == True %}
+                alert("Flight Status Update Successful!");
+                {% set session = session.update({"flight_updated":False}) %}
+                {% endif %}
+            </script>
     </div>
-    {% endif %}
-
-
-
-    {% if error %}
-        <p class="error"><strong>Error:</strong> {{error}}</p>
-        <a href='/login'>Go back to Login</a>
-    {% endif %}
 
     <script src="{{ url_for('static',filename='js/script.js')}}"></script>
 {% endblock %}

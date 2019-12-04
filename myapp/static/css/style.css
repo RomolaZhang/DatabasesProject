@@ -311,3 +311,7 @@ fieldset{
 .info{
     border: 1px solid black;
 }
+
+.prompt{
+    margin: 20px;
+}

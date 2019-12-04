@@ -52,7 +52,7 @@ def searchFlights():
         rate = (each['seats'] - ticketNum['count(*)']) / each['seats']
         if rate > 0.7:
             each['current_price'] = Decimal(1.2) *each['base_price']
-    
+    conn.commit()
     cursor.close()
 
     error = None
@@ -100,6 +100,7 @@ def checkFlight():
     data3 = cursor.fetchall()
 
     cursor.close()
+    conn.commit()
     error = None
 
     if data3: 
