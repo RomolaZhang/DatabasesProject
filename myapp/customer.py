@@ -19,7 +19,7 @@ def customerHome():
 @customer_login_required
 def logout():
     session.clear()
-    return redirect('/')
+    return redirect(url_for('register_login.login'))
 
 @customer.route('/viewMyFlights')
 @customer_or_agent_login_required
@@ -59,6 +59,10 @@ def searchFlights():
     arr_at = request.form['arr_at']
     dept_date = request.form['dept_date']
     return_date = request.form['return_date']
+
+    if datetime.strptime(dept_date, "%Y-%m-%d") < datetime.now() or \
+        datetime.strptime(return_date, "%Y-%m-%d") < datetime.now() :
+        return render_template("index.html", error = "The dates you entered have already passed.")
 
     #open cursor
     cursor = conn.cursor()
@@ -254,6 +258,8 @@ def trackMySpending():
     if request.method == 'POST':
         to_date = request.form['to_date']
         from_date = request.form['from_date']
+        if from_date > to_date:
+            return render_template('trackMySpending.html', error="The dates you entered are invalid.")
         to_date_format = datetime.datetime.strptime(to_date, '%Y-%m-%d')
         from_date_format = datetime.datetime.strptime(from_date, '%Y-%m-%d')
         year = to_date_format.year

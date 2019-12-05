@@ -2,6 +2,7 @@
 from flask import Blueprint, render_template, request, redirect
 from database import conn
 from decimal import *
+from datetime import datetime
 
 public = Blueprint('public', __name__)
 
@@ -17,6 +18,10 @@ def searchFlights():
     arr_at = request.form['arr_at']
     dept_date = request.form['dept_date']
     return_date = request.form['return_date']
+
+    if datetime.strptime(dept_date, "%Y-%m-%d") < datetime.now() or \
+        datetime.strptime(return_date, "%Y-%m-%d") < datetime.now() :
+        return render_template("index.html", error = "The dates you entered have already passed.")
 
     #open cursor
     cursor = conn.cursor()
@@ -35,7 +40,8 @@ def searchFlights():
 
     #store the results
     data2 = cursor.fetchall()
-
+    print(data2)
+    
 
     for each in data:
         #excutes query for ticket sold 
