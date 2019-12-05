@@ -4,7 +4,7 @@
 
 {% endblock %}
 {% block body %} 
-    <h1>Flight Status</h1>
+    <div class="title">Flight Status</div>
     {% if status %}
         <table>
             <th> Airline Name </th>
@@ -31,6 +31,6 @@
     {% if error %}
         <p class="error"><strong>Error:</strong> {{error}}</p>
     {% endif %}
-
+    <a href="/" class="back">Back</a>
 
 {% endblock %}

@@ -23,7 +23,7 @@ function roundTrip(){
 }
 
 function checkForm(){
-    if(roundTripButton.className == "active"){
+    if(roundTripButton.className.includes("active")){
         var inputs = document.getElementsByTagName("input");
         var i = 0;
         for(i=0; i< inputs.length; i++){
@@ -37,6 +37,18 @@ function checkForm(){
             }
         }
     }
+    return true;
+}
+
+function validate(){
+    var input1 = document.getElementById("dept_date");
+    var input2 = document.getElementById("arr_date");
+    console.log(input1.value);
+    if((input1.value == "" || input1.value == null) && (input2.value == "" || input2.value == null)){
+        alert ("You need to fill in at least one of the dates.");
+        return false;
+    }
+    return true;
 }
 
 function search(){

@@ -1,16 +1,14 @@
 from flask import Blueprint, render_template, request, session, url_for, redirect, flash
 from database import conn
 from datetime import datetime
+from login_required import staff_login_required
 
 
 staff = Blueprint('staff', __name__)
 
 @staff.route('/staffHome')
+@staff_login_required
 def staffHome():
-    #unauthorized user redirect
-    if session["role"] != "staff": 
-        error = 'Unauthorized User: only staff members are authorized to manage this page'
-        return render_template('staffHome.html', error=error)
         
     #fetch data from session
     username = session["username"]
@@ -24,17 +22,9 @@ def staffHome():
     cursor.close()
     return render_template("staffHome.html",username = username, info = data)
 
-@staff.route('/logout')
-def logout():
-    session.clear()
-    return redirect('/')
-
 @staff.route('/flightManage', methods = ['GET', 'POST'])
+@staff_login_required
 def viewFlight():
-    #unauthorized user redirect
-    if session["role"] != "staff": 
-        error = 'Unauthorized User: only staff members are authorized to manage this page'
-        return render_template('staffHome.html', error=error) 
 
     #get airline name
     airline_name = session['airline_name']
@@ -78,12 +68,8 @@ def viewFlight():
 
 
 @staff.route('/addFlight', methods = ['GET', 'POST'])
+@staff_login_required
 def add_flight():
-    #unauthorized user redirect
-    if session["role"] != "staff": 
-        error = 'Unauthorized User: only staff members are authorized to manage this page'
-        return render_template('staffHome.html', error=error)
-    
     #get airline name
     airline_name = session['airline_name']
 
@@ -144,11 +130,8 @@ def add_flight():
         render_template("flightManage.html")
 
 @staff.route('/updateFlight/<string:flight_num>/<string:dept_time>', methods = ['GET', 'POST'])
+@staff_login_required
 def updateFlight(flight_num, dept_time): 
-    #unauthorized user redirect
-    if session["role"] != "staff": 
-        error = 'Unauthorized User: only staff members are authorized to manage this page'
-        return render_template('staffHome.html', error=error)
 
     #get airline name
     airline_name = session['airline_name']
@@ -181,12 +164,8 @@ def updateFlight(flight_num, dept_time):
             return render_template('flightManage.html', noFound = noFound)
 
 @staff.route('/viewPassengers/<string:flight_num>/<string:dept_time>')
+@staff_login_required
 def viewPassenger(flight_num, dept_time):
-    #unauthorized user redirect
-    if session["role"] != "staff": 
-        error = 'Unauthorized User: only staff members are authorized to manage this page'
-        return render_template('staffHome.html', error=error)
-    
     #get airline name
     airline_name = session['airline_name']
     print(flight_num, dept_time)
@@ -208,12 +187,8 @@ def viewPassenger(flight_num, dept_time):
 
 
 @staff.route('/airSystemManage/airplane', methods = ['GET', 'POST'])
+@staff_login_required
 def managePlane():
-    #unauthorized user redirect
-    if session["role"] != "staff": 
-        error = 'Unauthorized User: only staff members are authorized to manage this page'
-        return render_template('staffHome.html', error=error)
-
     #get airline name
     airline_name = session['airline_name']
 
@@ -258,12 +233,8 @@ def managePlane():
 
 
 @staff.route('/airSystemManage/airport', methods = ['GET', 'POST'])
+@staff_login_required
 def manageAirport():
-       #unauthorized user redirect
-    if session["role"] != "staff": 
-        error = 'Unauthorized User: only staff members are authorized to manage this page'
-        return render_template('staffHome.html', error=error)
-
     if request.method == "POST":
         #fetch data
         name = request.form["name"]
@@ -304,12 +275,8 @@ def manageAirport():
             return render_template("airSystemManage.html", noFound = noFound)
 
 @staff.route('/report/viewRatings/<string:flight_num>/<string:dept_time>')
+@staff_login_required
 def checkRatings(flight_num, dept_time):
-    #unauthorized user redirect
-    if session["role"] != "staff": 
-        error = 'Unauthorized User: only staff members are authorized to manage this page'
-        return render_template('staffHome.html', error=error)
-
     #get airline name
     airline_name = session['airline_name']
 
@@ -331,12 +298,8 @@ def checkRatings(flight_num, dept_time):
 
 
 @staff.route('/report/topAgent', methods = ['GET', 'POST'])
+@staff_login_required
 def viewTopAgent():
-    #unauthorized user redirect
-    if session["role"] != "staff": 
-        error = 'Unauthorized User: only staff members are authorized to manage this page'
-        return render_template('staffHome.html', error=error)
-
     #get airline name
     airline_name = session['airline_name']
     
@@ -409,12 +372,8 @@ def viewTopAgent():
             return render_template("report.html", noFound = noFound)
 
 @staff.route('/report/topCustomer')
+@staff_login_required
 def viewTopCustomer(): 
-    #unauthorized user redirect
-    if session["role"] != "staff": 
-        error = 'Unauthorized User: only staff members are authorized to manage this page'
-        return render_template('staffHome.html', error=error)
-
     #get airline name
     airline_name = session['airline_name']
 
@@ -443,12 +402,8 @@ def viewTopCustomer():
 
 
 @staff.route('/report/topCustomer/<string:email>')
+@staff_login_required
 def viewCustomerFlight(email): 
-    #unauthorized user redirect
-    if session["role"] != "staff": 
-        error = 'Unauthorized User: only staff members are authorized to manage this page'
-        return render_template('staffHome.html', error=error)
-
     #get airline name
     airline_name = session['airline_name']
 
@@ -467,12 +422,8 @@ def viewCustomerFlight(email):
         return render_template("report.html", noFound = noFound)
 
 @staff.route('/report/salesReport/<string:message>', methods = ['GET', 'POST'])
+@staff_login_required
 def viewReport(message):
-    #unauthorized user redirect
-    if session["role"] != "staff": 
-        error = 'Unauthorized User: only staff members are authorized to manage this page'
-        return render_template('staffHome.html', error=error)
-
     #get airline name
     airline_name = session['airline_name']
 
@@ -590,12 +541,8 @@ def viewReport(message):
 
 
 @staff.route('/report/revenueCompare', methods = ['GET', 'POST'])
+@staff_login_required
 def revenueCompare():
-    #unauthorized user redirect
-    if session["role"] != "staff": 
-        error = 'Unauthorized User: only staff members are authorized to manage this page'
-        return render_template('staffHome.html', error=error)
-
     #get airline name
     airline_name = session['airline_name']
 
@@ -647,16 +594,9 @@ def revenueCompare():
         max = mymax, labels = labels, values = values, colors = colors)
 
 
-
-
-
-
 @staff.route('/report/topDestination', methods = ['GET','POST'])
+@staff_login_required
 def topDestination(): 
-    #unauthorized user redirect
-    if session["role"] != "staff": 
-        error = 'Unauthorized User: only staff members are authorized to manage this page'
-        return render_template('staffHome.html', error=error)
     #get airline name
     airline_name = session['airline_name']
     

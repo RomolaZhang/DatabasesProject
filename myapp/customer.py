@@ -70,6 +70,8 @@ def searchFlights():
     data = cursor.fetchall()
 
     if return_date:
+        if dept_date > return_date:
+            return render_template("searchForFlights.html", error = "The dates you entered are invalid.")
         query2 = "select * from flight natural join airplane, airport as A, airport as B where flight.dept_from = A.name and flight.arr_at = B.name and (A.name = %s or A.city = %s) and (B.name = %s or B.city = %s) and date(dept_time) = %s "
         cursor.execute(query2, ( arr_at, arr_at, dept_from, dept_from, return_date))
 
@@ -233,7 +235,7 @@ def giveComments(ticket_id):
     else:
         cursor = conn.cursor()
         #excutes query for flight
-        query = "select * from ticket natural join flight natural join airport as A, airport as B where ticket_id = %s"
+        query = "select * from ticket natural join flight natural join airport as A, airport as B where ticket_id = %s and dept_from = A.name and arr_at = B.name"
         cursor.execute(query, (ticket_id))
         #store the results
         data = cursor.fetchone()
@@ -279,11 +281,11 @@ def trackMySpending():
     query = "SELECT COALESCE( SUM(sold_price), 0) as total_spending FROM ticket WHERE purchase_time > %s AND purchase_time < %s AND cust_email = %s"
     cursor.execute(query, (from_date, to_date, session['email']))
     total_spending = float(cursor.fetchone()['total_spending'])
-
+    print(month)
     if month < 12:
         string = '{} 1 {} 00:00'.format(month+1, year + 1)
     else:
-        string = '{} 1 {} 00:00'.format(0, year + 2)
+        string = '{} 1 {} 00:00'.format(1, year + 2)
     temp_date = datetime.datetime.strptime(string, '%m %d %Y %H:%M')
 
     # query = "SELECT DATE_FORMAT(purchase_time, '%%%%Y-%%%%m'), COALESCE(SUM(sold_price), 0) as monthly_spending FROM ticket \
