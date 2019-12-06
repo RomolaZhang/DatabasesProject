@@ -4,6 +4,7 @@ from database import conn
 import datetime
 from login_required import *
 from decimal import *
+import copy
 
 
 customer = Blueprint('customer', __name__)
@@ -60,21 +61,21 @@ def searchFlights():
     dept_date = request.form['dept_date']
     return_date = request.form['return_date']
 
-    if datetime.strptime(dept_date, "%Y-%m-%d") < datetime.now() or \
-        datetime.strptime(return_date, "%Y-%m-%d") < datetime.now() :
-        return render_template("index.html", error = "The dates you entered have already passed.")
+    if datetime.datetime.strptime(dept_date, "%Y-%m-%d") < datetime.datetime.now():
+        return render_template("searchForFlights.html", error = "The dates you entered have already passed.")
 
     #open cursor
     cursor = conn.cursor()
 
     #excutes query for flight
-    query = "select * from flight natural join airplane, airport as A, airport as B where flight.dept_from = A.name and flight.arr_at = B.name and (A.name = %s or A.city = %s) and (B.name = %s or B.city = %s) and date(dept_time) = %s "
+    query = "select * from flight natural join airplane, airport as A, airport as B \
+        where flight.dept_from = A.name and flight.arr_at = B.name and (A.name = %s or A.city = %s) and (B.name = %s or B.city = %s) and date(dept_time) = %s"
     cursor.execute(query, (dept_from, dept_from, arr_at, arr_at, dept_date))
     #store the results
     data = cursor.fetchall()
 
     if return_date:
-        if dept_date > return_date:
+        if datetime.datetime.strptime(dept_date, "%Y-%m-%d") > datetime.datetime.strptime(return_date, "%Y-%m-%d"):
             return render_template("searchForFlights.html", error = "The dates you entered are invalid.")
         query2 = "select * from flight natural join airplane, airport as A, airport as B where flight.dept_from = A.name and flight.arr_at = B.name and (A.name = %s or A.city = %s) and (B.name = %s or B.city = %s) and date(dept_time) = %s "
         cursor.execute(query2, ( arr_at, arr_at, dept_from, dept_from, return_date))
@@ -82,7 +83,7 @@ def searchFlights():
     #store the results
     data2 = cursor.fetchall()
 
-
+    data_copy = copy.deepcopy(data)
     for i, each in enumerate(data):
         #excutes query for ticket sold 
         queryTicketNum = "select count(*) from ticket natural join flight natural join airplane where airline_name = %s and flight_num = %s and dept_time=%s"
@@ -95,8 +96,8 @@ def searchFlights():
         else:
             each['current_price'] = float(each['base_price'])
         each['base_price'] = float(each['base_price'])
-
-            
+    
+    data2_copy = copy.deepcopy(data2)      
     for i, each in enumerate(data2):
         #excutes query for ticket sold 
         queryTicketNum = "select count(*) from ticket natural join flight natural join airplane where airline_name = %s and flight_num = %s and dept_time=%s"
@@ -225,14 +226,12 @@ def giveComments(ticket_id):
         query = "select * from rates where cust_email = %s and airline_name = %s and flight_num = %s and dept_time = %s"
         cursor.execute(query, (session['email'], ticket['airline_name'], ticket['flight_num'],ticket['dept_time']))
         data = cursor.fetchone()
-        print(data)
         if data == None:
             query = "insert into rates values (%s, %s, %s, %s, %s, %s)"
             cursor.execute(query, (session['email'], ticket['airline_name'], ticket['flight_num'],ticket['dept_time'], rate, comment))
-        # else:
-        #     query = "update rates set rate = %s, comments = %s where cust_email = %s and airline_name = %s and flight_num = %s and dept_time = %s"
-        #     print(ticket['dept_time'].strftime("%Y-%m-%d %H:%M:%S"))
-        #     cursor.execute(query, (rate, comment, session['email'], ticket['airline_name'], ticket['flight_num'], ticket['dept_time'].strftime("%Y-%m-%d %H:%M:%S")))
+        else:
+            query = "update rates set rate = %s, comments = %s where cust_email = %s and airline_name = %s and flight_num = %s and dept_time = %s"
+            cursor.execute(query, (rate, comment, session['email'], ticket['airline_name'], ticket['flight_num'], ticket['dept_time'].strftime("%Y-%m-%d %H:%M:%S")))
         conn.commit()
         cursor.close()
         return redirect('/comments')
@@ -258,7 +257,7 @@ def trackMySpending():
     if request.method == 'POST':
         to_date = request.form['to_date']
         from_date = request.form['from_date']
-        if from_date > to_date:
+        if datetime.datetime.strptime(from_date, "%Y-%m-%d") > datetime.datetime.strptime(to_date, "%Y-%m-%d"):
             return render_template('trackMySpending.html', error="The dates you entered are invalid.")
         to_date_format = datetime.datetime.strptime(to_date, '%Y-%m-%d')
         from_date_format = datetime.datetime.strptime(from_date, '%Y-%m-%d')

@@ -28,19 +28,23 @@ def viewFlight():
 
     #get airline name
     airline_name = session['airline_name']
-
+    default = ""
     if request.method == "POST": 
         #grabs information from the forms
         dept_from = request.form['dept_from']
         arr_at = request.form['arr_at']
         start_date = request.form['start_date']
         end_date = request.form['end_date']
+        if datetime.strptime(start_date, "%Y-%m-%d") > datetime.strptime(end_date, "%Y-%m-%d"):
+            return render_template("flightManage.html", error = "The dates you entered are invalid.")
 
         #database query
         cursor = conn.cursor()
-        query = "SELECT * FROM flight WHERE airline_name = %s AND DATE(dept_time) >= DATE(%s) \
-        AND DATE(dept_time) <= DATE(%s) AND dept_from = %s AND arr_at = %s"
-        cursor.execute(query, (airline_name, start_date, end_date, dept_from, arr_at))
+        query = "SELECT * FROM flight NATURAL JOIN airplane, airport as A, airport as B \
+        where airline_name = %s AND date(dept_time) >= %s AND date(dept_time) <= %s \
+        AND flight.dept_from = A.name and flight.arr_at = B.name and (A.name = %s or A.city = %s) \
+            and (B.name = %s or B.city = %s)"
+        cursor.execute(query, (airline_name, start_date, end_date, dept_from, dept_from, arr_at, arr_at))
         data1 = cursor.fetchall() 
         cursor.close()
         msg = (dept_from, arr_at, start_date, end_date)
@@ -83,6 +87,9 @@ def add_flight():
         dept_from = request.form['dept_from1']
         arr_at = request.form['arr_at1']
         airplane_id = request.form['airplane_id1']
+        print(dept_time)
+        if datetime.strptime(dept_time, "%Y-%m-%dT%H:%M") > datetime.strptime(arr_time, "%Y-%m-%dT%H:%M"):
+            return render_template("flightManage.html", error = "The dates you entered are invalid.")
 
         cursor = conn.cursor()
         
@@ -290,6 +297,7 @@ def checkRatings(flight_num, dept_time):
     data = cursor.fetchall()
     if data: 
         for each in data: 
+            each['avg_rate'] = "{0:.2f}".format(float(each['avg_rate']))
             print (each)
         return render_template("report.html", ratings = data)
     else: 
@@ -444,6 +452,8 @@ def viewReport(message):
         #fetch input
         from_date = request.form["from_date"] 
         to_date = request.form["to_date"]
+        if datetime.strptime(from_date, "%Y-%m-%d") > datetime.strptime(to_date, "%Y-%m-%d"):
+            return render_template("flightManage.html", error = "The dates you entered are invalid.")
             
         #access total_sales
         cursor = conn.cursor()

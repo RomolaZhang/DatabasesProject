@@ -19,8 +19,7 @@ def searchFlights():
     dept_date = request.form['dept_date']
     return_date = request.form['return_date']
 
-    if datetime.strptime(dept_date, "%Y-%m-%d") < datetime.now() or \
-        datetime.strptime(return_date, "%Y-%m-%d") < datetime.now() :
+    if datetime.strptime(dept_date, "%Y-%m-%d") < datetime.now():
         return render_template("index.html", error = "The dates you entered have already passed.")
 
     #open cursor
@@ -33,7 +32,7 @@ def searchFlights():
     data = cursor.fetchall()
 
     if return_date:
-        if dept_date > return_date:
+        if datetime.strptime(dept_date, "%Y-%m-%d") > datetime.strptime(return_date, "%Y-%m-%d"):
             return render_template("search.html", error = "The dates you entered are invalid.")
         query2 = "select * from flight natural join airplane, airport as A, airport as B where flight.dept_from = A.name and flight.arr_at = B.name and (A.name = %s or A.city = %s) and (B.name = %s or B.city = %s) and date(dept_time) = %s "
         cursor.execute(query2, ( arr_at, arr_at, dept_from, dept_from, return_date))

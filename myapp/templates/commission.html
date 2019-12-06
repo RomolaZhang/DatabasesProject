@@ -27,13 +27,23 @@
             </div> 
             <input type="submit" class="dateSubmit" value="view commission within this range"> <br>
         </form>
+
+        {% if error %}
+        <div class="spending totalSpending">{{error}}</div>
+        {% else %}
+
         {% if from_date %}
         <div class="spending totalSpending">My total commission from {{from_date}} to {{to_date}} is {{total_price}}.</div>
+        <div class="spending totalSpending">My average commission per ticket from {{from_date}} to {{to_date}} is {{average_commission}}.</div>
         <div class="spending totalSpending">My total sale from {{from_date}} to {{to_date}} is {{ticket_num}}.</div>
         {% else %}
         <div class="spending totalSpending">My total commission in last 30 days is {{total_price}}.</div>
+        <div class="spending totalSpending">My average commission per ticket in last 30 days is {{average_commission}}.</div>
         <div class="spending totalSpending">My total sale in last 30 days is {{ticket_num}}.</div>
         {% endif %}
+
+        {% endif %}
+
     
     </div>
 </div>

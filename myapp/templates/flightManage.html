@@ -34,12 +34,22 @@
             <div class = "condition panel">
                 <form action='/flightManage' method="POST">
                     <h4> View Options </h4>
-                    <input type="text" name = "dept_from" placeholder="place of departure" required/> </br>
-                    <input type="text" name = "arr_at" placeholder="destination" required/></br>
-                    <div class="prompt">start date (departure date)</div>
-                    <input type="date" name = "start_date" placeholder="start date date" required/></br>
-                    <div class="prompt">end date (departure date)</div>
-                    <input type="date" name = "end_date" placeholder="end date" required/></br>
+                    <div class="inputBlock">
+                        <label for="dept_from">place of departure:</label>
+                        <input type="text" name = "dept_from" required/> </br>
+                    </div>
+                    <div class="inputBlock">
+                        <label for="arr_at">destination:</label>
+                        <input type="text" name = "arr_at" required/></br>
+                    </div>
+                    <div class="inputBlock">
+                        <label for="start_date">start date:</label>
+                        <input type="date" name = "start_date" required/></br>
+                    </div>
+                    <div class="inputBlock">
+                        <label for="end_date">end date:</label>
+                        <input type="date" name = "end_date" required/></br>
+                    </div>
                     <input type="submit" value = View> <br>   
                 </form>
             </div>
@@ -92,24 +102,48 @@
                 {% endif %}
                 </table>
 
+                {% if error %}
+                <p class="noFound"><strong>Error:</strong> {{error}}</p>
+                <a href='/flightManage'>Go back to Default </a>
+                {% endif %}
+
                 {% if noFound %}
                 <p class="noFound"><strong>Error:</strong> {{noFound}}</p>
-                <a href='/flightManage'>Go back to Flight Management</a>
+                <a href='/flightManage'>Go back to Default </a>
                 {% endif %}
             </div>
             
             <div class = "add_flight">
                 <h4> Add New Flights </h4>
                 <form action = "/addFlight" method = "POST"> 
-                    <input type="text" name = "flight_num1" placeholder="flight number" required/> </br>
-                    <div class="prompt">departure time </div>
-                    <input type="datetime-local" name = "dept_time1" placeholder="departure time" required/></br>
-                    <div class="prompt">arrival time </div>
-                    <input type="datetime-local" name = "arr_time1" placeholder="arrival time" required/></br>
-                    <input type="text" name = "base_price1" placeholder="Base Price" required/> </br>
-                    <input type="text" name = "dept_from1" placeholder="place of departure" required/> </br>
-                    <input type="text" name = "arr_at1" placeholder="destination" required/></br>
-                    <input type="text" name = "airplane_id1" placeholder="airplane_id" required/></br>
+                    <div class="inputBlock">
+                        <label for="flight_num1">flight number:</label>
+                        <input type="text" name = "flight_num1" required/> </br>
+                    </div>
+                    <div class="inputBlock">
+                        <label for="dept_time1">departure time:</label>
+                        <input type="datetime-local" name = "dept_time1" required/></br>
+                    </div>
+                    <div class="inputBlock">
+                        <label for="arr_time1">arrival time:</label>
+                        <input type="datetime-local" name = "arr_time1" required/></br>
+                    </div>
+                    <div class="inputBlock">
+                        <label for="base_price1">base price:</label>
+                        <input type="text" name = "base_price1" required/> </br>
+                    </div>
+                    <div class="inputBlock">
+                        <label for="dept_from1">place of departure:</label>
+                        <input type="text" name = "dept_from1" required/> </br>
+                    </div>
+                    <div class="inputBlock">
+                        <label for="arr_at1">destination:</label>
+                        <input type="text" name = "arr_at1" required/></br>
+                    </div>
+                    <div class="inputBlock">
+                        <label for="airplane_id1">airplane id:</label>
+                        <input type="text" name = "airplane_id1" required/></br>
+                    </div>
                     <input type="submit" value = Add> <br>   
                 </form>
             </div>
