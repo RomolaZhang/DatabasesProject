@@ -91,6 +91,10 @@ def searchFlights():
         ticketNum = cursor.fetchone()
         rate = ticketNum['count(*)'] / each['seats']
         each['index'] = i
+        if ticketNum['count(*)'] == each['seats']:
+            each['seatStatus'] = 'full'
+        else:
+            each['seatStatus'] = 'normal'
         if rate > 0.7:
             each['current_price'] = float(round(Decimal(1.2) *each['base_price'], 2))
         else:
@@ -105,6 +109,10 @@ def searchFlights():
         ticketNum = cursor.fetchone()
         each['index'] = i
         rate = ticketNum['count(*)'] / each['seats']
+        if ticketNum['count(*)'] == each['seats']:
+            each['seatStatus'] = 'full'
+        else:
+            each['seatStatus'] = 'normal'
         if rate > 0.7:
             each['current_price'] = float(round(Decimal(1.2) *each['base_price'], 2))
         else:
