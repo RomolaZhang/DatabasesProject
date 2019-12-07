@@ -188,6 +188,12 @@ def purchaseDetails():
     time = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
     if session['role'] == 'agent':
         cust_email = request.form['cust_email']
+        query = "select count(*) from customer where email = %s"
+        cursor.execute(query, cust_email)
+        num = cursor.fetchone()
+        print(num)
+        if num['count(*)'] == 0:
+            return "Failure"
         #excutes query for flight
         query = "insert into ticket values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
         cursor.execute(query, (str(datetime.datetime.now().timestamp()), current_price, card_type, card_num, name_on_card, expr_date, time, session['email'], cust_email, airline_name, flight_num, dept_time))
@@ -311,7 +317,7 @@ def trackMySpending():
     
     labels = []
     values = []
-    temp_year = year
+    temp_year = to_date.year
     temp_month = month
     for i in range(0,monthnum + 1):
         this_date = temp_date
@@ -323,7 +329,6 @@ def trackMySpending():
             temp_year = temp_year - 1
         string = '{} 1 {} 00:00'.format(temp_month, temp_year)
         temp_date = datetime.datetime.strptime(string, '%m %d %Y %H:%M')
-        print(temp_date)
         query = "SELECT SUM(sold_price) as monthly_spending FROM ticket WHERE purchase_time > %s and purchase_time < %s AND cust_email = %s"
         cursor.execute(query, (temp_date, this_date, session['email']))
         data = cursor.fetchone()

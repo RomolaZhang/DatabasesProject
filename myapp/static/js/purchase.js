@@ -83,11 +83,16 @@ function checkOut(){
             'cust_email': cust_email,
         },
         url : "/purchaseDetails",
-        success:function(){
-            alert("Purchased successfully.");
-            if(cust_email == null){
-                window.location.replace("/customerHome");
+        success:function(data){
+            if(data == "Success"){
+                alert("Purchased successfully.");
+                if(cust_email == null){
+                    window.location.replace("/customerHome");
+                }else{
+                    window.location.replace("/agentHome");
+                }
             }else{
+                alert("This customer does not exist.");
                 window.location.replace("/agentHome");
             }
         }

@@ -192,6 +192,7 @@ def registerAuthStaff():
     last_name = request.form['last_name']
     DOB = request.form['DOB']
     airline_name = request.form['airline_name']
+    phone_number = request.form['phone_number']
     #cursor used to send queries
     cursor = conn.cursor()
     #executes query
@@ -209,6 +210,14 @@ def registerAuthStaff():
     else:
         ins = 'INSERT INTO airline_staff VALUES(%s, %s, %s, %s, %s, %s)'
         cursor.execute(ins, (username, password, first_name, last_name, DOB, airline_name))
+        if ";" in phone_number: 
+            phone_number_lst = phone_number.split(";")
+            for item in phone_number_lst: 
+                ins = 'INSERT INTO staff_phone VALUES(%s, %s)'
+                cursor.execute(ins, (username, item.strip()))
+        else: 
+            ins = 'INSERT INTO staff_phone VALUES(%s, %s)'
+            cursor.execute(ins, (username, phone_number))
         conn.commit()
         cursor.close()
         return render_template('index.html')

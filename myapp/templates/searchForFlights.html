@@ -109,7 +109,11 @@
                     <td class="return_flight">{{line['arr_at']}}</td>
                     <td class="return_flight">{{line['B.city']}}</td>
                     <td class="return_flight">{{line['current_price']}}</td>
-                    <td class="return_flight"><input type="radio" class="radio2" value="{{line['index']}}"/></td>
+                    {% if line['seatStatus'] == 'normal' %}
+                    <td class="dept_flight"><input type="radio" class="radio" value="{{line['index']}}"/></td>
+                    {% else %}
+                    <td class="dept_flight">Full</td>
+                    {% endif %}
                 </tr>
             {% endfor %}
             </table>

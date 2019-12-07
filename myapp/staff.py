@@ -601,7 +601,7 @@ def revenueCompare():
         mymax = 100000
 
     return render_template("report.html", default = default, title = title, revenue = True, \
-        max = mymax, labels = labels, values = values, colors = colors)
+        max = mymax, set = zip(values, labels, colors))
 
 
 @staff.route('/report/topDestination', methods = ['GET','POST'])

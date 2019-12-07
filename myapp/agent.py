@@ -22,7 +22,7 @@ def commission():
         if datetime.datetime.strptime(from_date, "%Y-%m-%d") > datetime.datetime.strptime(to_date, "%Y-%m-%d"):
             return render_template("commission.html", error = "The dates you entered are invalid.")
         cursor = conn.cursor()
-        query = "SELECT SUM(sold_price) as total_price, COUNT(*) as ticket_num FROM ticket WHERE DATE(purchase_time) BETWEEN %s AND %s AND agent_email = %s"
+        query = "SELECT IFNULL(SUM(sold_price) , 0) as total_price, IFNULL(COUNT(*) , 0) as ticket_num FROM ticket WHERE DATE(purchase_time) BETWEEN %s AND %s AND agent_email = %s"
         cursor.execute(query, (from_date, to_date, session['email']))
         data = cursor.fetchone()
         conn.commit()
@@ -32,15 +32,22 @@ def commission():
         return render_template("commission.html", total_price = total_price, average_commission = average_commission, ticket_num = data['ticket_num'], from_date = from_date, to_date = to_date)
     else:
         cursor = conn.cursor()
-        query = "SELECT SUM(sold_price) as total_price, COUNT(*) as ticket_num FROM ticket WHERE DATE(purchase_time) BETWEEN NOW() - INTERVAL 30 DAY AND NOW() + INTERVAL 1 DAY AND agent_email = %s"
+        query = "SELECT IFNULL(SUM(sold_price) , 0) as total_price, IFNULL(COUNT(*) ,0) as ticket_num FROM ticket WHERE DATE(purchase_time) BETWEEN NOW() - INTERVAL 30 DAY AND NOW() + INTERVAL 1 DAY AND agent_email = %s"
         cursor.execute(query, (session['email']))
         data = cursor.fetchone()
         conn.commit()
         cursor.close()
-        total_price = "{0:.2f}".format(float(data['total_price'])*0.1)
-        average_commission = "{0:.2f}".format( float(data['total_price'])*0.1/float(data['ticket_num']))
-        return render_template("commission.html", total_price = total_price, average_commission = average_commission, ticket_num = data['ticket_num'])
-
+        print("data:", data)
+        if data['total_price'] != 0 and data['ticket_num'] != 0: 
+            total_price = "{0:.2f}".format(float(data['total_price'])*0.1)
+            average_commission = "{0:.2f}".format( float(data['total_price'])*0.1/float(data['ticket_num']))
+            ticket_num = data['ticket_num']
+        else: 
+            total_price = 0
+            average_commission = 0
+            ticket_num = 0
+        return render_template("commission.html", total_price = total_price, average_commission = average_commission, ticket_num = ticket_num)
+        
 @agent.route("/topCustomers")
 @agent_login_required
 def topCustomers():

@@ -230,28 +230,20 @@
                         <canvas id="pieChart" width="600" height="400"></canvas>
                         <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js'></script>
                         <script>
-
-new Chart(document.getElementById("pieChart").getContext('2d'), {
-    type: 'bar',
-    data: {
-      labels: ["Africa", "Asia", "Europe", "Latin America", "North America"],
-      datasets: [
-        {
-          label: "Population (millions)",
-          backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
-          data: [2478,5267,734,784,433]
-        }
-      ]
-    },
-    options: {
-      legend: { display: false },
-      title: {
-        display: true,
-        text: 'Predicted world population (millions) in 2050'
-      }
-    }
-});
-                        </script>
+                            var pieData = [
+                              {% for values, labels, colors in set %}
+                                {
+                                  value: {{values}},
+                                  label: "{{labels}}",
+                                  color: "{{colors}}"
+                                },
+                              {% endfor %}
+                            ];
+                            // get bar chart canvas
+                            var mychart = document.getElementById("pieChart").getContext("2d");
+                            // draw pie chart
+                            new Chart(document.getElementById("pieChart").getContext("2d")).Pie(pieData);
+                          </script>
                     </div>
                 </div>
                 {% endif %}

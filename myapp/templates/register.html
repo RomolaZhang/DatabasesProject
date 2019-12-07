@@ -73,7 +73,7 @@
     <form action="/registerAuthAgent" id = "agentForm" method="POST" onsubmit="return checkForm();">
     <div class="inputBlock">
         <label for="email">email:</label>
-        <input type="text" name = "email" /> </br>
+        <input type="text" name = "email" /> </br> 
     </div>
     <div class="inputBlock">
         <label for="password">password:</label>
@@ -112,6 +112,10 @@
         <div class="inputBlock">
                 <label for="airline_name">airline name:</label>
                 <input type="text" name = "airline_name"/> </br>
+            </div>
+        <div class="inputBlock">
+                <label for="phone_number">phone numbers, delimited by ";":</label>
+                <input type="text" id = "phone_number" name = "phone_number"> </br>
             </div>
         <input class="registerButton" type="submit" value = "Register" />    
     </form>
